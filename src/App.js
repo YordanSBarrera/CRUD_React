@@ -21,16 +21,82 @@ const data = [
 ];
 
 class App extends React.Component {
-  state = { data: data };
+  state = {
+    data: data,
+    form: {
+      id: "",
+      personaje: "",
+      anime: "",
+    },
+    modalInsertar: false,
+    modalEditar: false,
+  };
+  handleChange = (e) => {
+    // console.log(this.state.form);
+    this.setState({
+      form: { ...this.state.form, [e.target.name]: e.target.value },
+    });
+    //console.log(e.target.value);
+  };
+  cerrarModal = () => {
+    this.setState({ modalInsertar: false, modalEditar: false });
+  };
+  insertar = () => {
+    console.log(this.state.form);
+    var ValorNuevo = { ...this.state.form };
+    ValorNuevo.id = this.state.data.length + 1;
+    var lista = this.state.data;
+    lista.push(ValorNuevo);
+    this.setState({ data: lista });
+    this.cerrarModal();
+  };
+  editar = (dato) => {
+    var contador = 0;
+    var lista = this.state.data;
+    lista.map((registro) => {
+      if (dato.id == registro.id) {
+        lista[contador].personaje = dato.personaje;
+        lista[contador].anime = dato.anime;
+      }
+      contador++;
+    });
+    this.setState({ data: lista });
+    this.cerrarModal();
+  };
+  abrirEditarModal = (registro) => {
+    this.setState({
+      form: registro,
+      modalEditar: true,
+    });
+  };
+
+  eliminar = (dato) => {
+    var opcion = window.confirm("Desea elimiar el elemento " + dato.id);
+    if (opcion) {
+      var lista = this.state.data;
+      var contador = 0;
+      lista.map((registro) => {
+        if (dato.id == registro.id) {
+          lista.splice(contador, 1);
+        }
+        contador++;
+      });
+      this.setState({ data: lista });
+    }
+  };
 
   render() {
-    console.log(this.state.data);
     return (
       <div>
-        Hola Yordan
-        <br />
         <Container>
-          <Button color="primary">Insertar Nuevo Personaje</Button>
+          <Button
+            color="success"
+            onClick={() => {
+              this.setState({ modalInsertar: true });
+            }}
+          >
+            Insertar Nuevo Personaje
+          </Button>
 
           <br />
           <br />
@@ -50,15 +116,126 @@ class App extends React.Component {
                   <th>{elemento.personaje}</th>
                   <th>{elemento.anime}</th>
                   <th>
-                    <Button color="primary">Editar</Button>
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        this.abrirEditarModal(elemento);
+                      }}
+                    >
+                      Editar
+                    </Button>
                     {"  "}
-                    <Button color="danger">Borrar</Button>
+                    <Button
+                      color="danger"
+                      onClick={() => {
+                        this.eliminar(elemento);
+                      }}
+                    >
+                      Borrar
+                    </Button>
                   </th>
                 </tr>
               ))}
             </tbody>
           </Table>
         </Container>
+
+        <Modal isOpen={this.state.modalInsertar}>
+          <ModalHeader>
+            <div>
+              <h3>Insertar Registro</h3>
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            <FormGroup>
+              <label>ID:</label>
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.data.length + 1}
+                name="id"
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Personaje:</label>
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                type="text"
+                name="personaje"
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Anime:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="anime"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={this.insertar} color="primary">
+              Agregar
+            </Button>
+            <Button onClick={this.cerrarModal} color="danger">
+              Cancelar
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal isOpen={this.state.modalEditar}>
+          <ModalHeader>
+            <div>
+              <h3>Editar Registro</h3>
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            <FormGroup>
+              <label>ID:</label>
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.form.id}
+                name="id"
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Personaje:</label>
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                type="text"
+                name="personaje"
+                value={this.state.form.personaje}
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Anime:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="anime"
+                onChange={this.handleChange}
+                value={this.state.form.anime}
+              />
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              onClick={() => this.editar(this.state.form)}
+              color="primary"
+            >
+              Editar
+            </Button>
+            <Button onClick={this.cerrarModal} color="danger">
+              Cancelar
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
