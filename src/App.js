@@ -21,16 +21,37 @@ const data = [
 ];
 
 class App extends React.Component {
-  state = { data: data };
+  state = {
+    data: data,
+    form: {
+      id: "",
+      personaje: "",
+      anime: "",
+    },
+    modalInsertar: false,
+  };
+  handleChange = (e) => {
+    this.setState({
+      ...this.state.form,
+      [e.target.name]: e.target.value,
+    });
+  };
+  cerrarModal = () => {
+    this.setState({ modalInsertar: false });
+  };
 
   render() {
-    console.log(this.state.data);
     return (
       <div>
-        Hola Yordan
-        <br />
         <Container>
-          <Button color="primary">Insertar Nuevo Personaje</Button>
+          <Button
+            color="primary"
+            onClick={() => {
+              this.setState({ modalInsertar: true });
+            }}
+          >
+            Insertar Nuevo Personaje
+          </Button>
 
           <br />
           <br />
@@ -59,6 +80,41 @@ class App extends React.Component {
             </tbody>
           </Table>
         </Container>
+        <Modal isOpen={this.state.modalInsertar}>
+          <ModalHeader>
+            <div>
+              <h3>Insertar Registro</h3>
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            <FormGroup>
+              <label>ID:</label>
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.data.length + 1}
+                name="id"
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Personaje:</label>
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                type="text"
+                name="personaje"
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Anime:</label>
+              <input className="form-control" type="text" name="anime" on />
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={this.cerrarModal}>Agregar</Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
