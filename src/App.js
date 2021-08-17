@@ -29,6 +29,7 @@ class App extends React.Component {
       anime: "",
     },
     modalInsertar: false,
+    modalEditar: false,
   };
   handleChange = (e) => {
     // console.log(this.state.form);
@@ -38,7 +39,7 @@ class App extends React.Component {
     //console.log(e.target.value);
   };
   cerrarModal = () => {
-    this.setState({ modalInsertar: false });
+    this.setState({ modalInsertar: false, modalEditar: false });
   };
   insertar = () => {
     console.log(this.state.form);
@@ -48,6 +49,25 @@ class App extends React.Component {
     lista.push(ValorNuevo);
     this.setState({ data: lista });
     this.cerrarModal();
+  };
+  editar = (dato) => {
+    var contador = 0;
+    var lista = this.state.data;
+    lista.map((registro) => {
+      if (dato.id == registro.id) {
+        lista[contador].personaje = dato.personaje;
+        lista[contador].anime = dato.anime;
+      }
+      contador++;
+    });
+    this.setState({ data: lista });
+    this.cerrarModal();
+  };
+  abrirEditarModal = (registro) => {
+    this.setState({
+      form: registro,
+      modalEditar: true,
+    });
   };
 
   render() {
@@ -81,7 +101,14 @@ class App extends React.Component {
                   <th>{elemento.personaje}</th>
                   <th>{elemento.anime}</th>
                   <th>
-                    <Button color="primary">Editar</Button>
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        this.abrirEditarModal(elemento);
+                      }}
+                    >
+                      Editar
+                    </Button>
                     {"  "}
                     <Button color="danger">Borrar</Button>
                   </th>
@@ -90,6 +117,7 @@ class App extends React.Component {
             </tbody>
           </Table>
         </Container>
+
         <Modal isOpen={this.state.modalInsertar}>
           <ModalHeader>
             <div>
@@ -129,6 +157,57 @@ class App extends React.Component {
           <ModalFooter>
             <Button onClick={this.insertar} color="primary">
               Agregar
+            </Button>
+            <Button onClick={this.cerrarModal} color="danger">
+              Cancelar
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal isOpen={this.state.modalEditar}>
+          <ModalHeader>
+            <div>
+              <h3>Editar Registro</h3>
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            <FormGroup>
+              <label>ID:</label>
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.form.id}
+                name="id"
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Personaje:</label>
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                type="text"
+                name="personaje"
+                value={this.state.form.personaje}
+              />
+            </FormGroup>
+            <FormGroup>
+              <label>Anime:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="anime"
+                onChange={this.handleChange}
+                value={this.state.form.anime}
+              />
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              onClick={() => this.editar(this.state.form)}
+              color="primary"
+            >
+              Editar
             </Button>
             <Button onClick={this.cerrarModal} color="danger">
               Cancelar
