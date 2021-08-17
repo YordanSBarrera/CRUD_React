@@ -70,6 +70,21 @@ class App extends React.Component {
     });
   };
 
+  eliminar = (dato) => {
+    var opcion = window.confirm("Desea elimiar el elemento " + dato.id);
+    if (opcion) {
+      var lista = this.state.data;
+      var contador = 0;
+      lista.map((registro) => {
+        if (dato.id == registro.id) {
+          lista.splice(contador, 1);
+        }
+        contador++;
+      });
+      this.setState({ data: lista });
+    }
+  };
+
   render() {
     return (
       <div>
@@ -110,7 +125,14 @@ class App extends React.Component {
                       Editar
                     </Button>
                     {"  "}
-                    <Button color="danger">Borrar</Button>
+                    <Button
+                      color="danger"
+                      onClick={() => {
+                        this.eliminar(elemento);
+                      }}
+                    >
+                      Borrar
+                    </Button>
                   </th>
                 </tr>
               ))}
