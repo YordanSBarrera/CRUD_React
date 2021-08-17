@@ -31,13 +31,23 @@ class App extends React.Component {
     modalInsertar: false,
   };
   handleChange = (e) => {
+    // console.log(this.state.form);
     this.setState({
-      ...this.state.form,
-      [e.target.name]: e.target.value,
+      form: { ...this.state.form, [e.target.name]: e.target.value },
     });
+    //console.log(e.target.value);
   };
   cerrarModal = () => {
     this.setState({ modalInsertar: false });
+  };
+  insertar = () => {
+    console.log(this.state.form);
+    var ValorNuevo = { ...this.state.form };
+    ValorNuevo.id = this.state.data.length + 1;
+    var lista = this.state.data;
+    lista.push(ValorNuevo);
+    this.setState({ data: lista });
+    this.cerrarModal();
   };
 
   render() {
@@ -45,7 +55,7 @@ class App extends React.Component {
       <div>
         <Container>
           <Button
-            color="primary"
+            color="success"
             onClick={() => {
               this.setState({ modalInsertar: true });
             }}
@@ -108,11 +118,21 @@ class App extends React.Component {
             </FormGroup>
             <FormGroup>
               <label>Anime:</label>
-              <input className="form-control" type="text" name="anime" on />
+              <input
+                className="form-control"
+                type="text"
+                name="anime"
+                onChange={this.handleChange}
+              />
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={this.cerrarModal}>Agregar</Button>
+            <Button onClick={this.insertar} color="primary">
+              Agregar
+            </Button>
+            <Button onClick={this.cerrarModal} color="danger">
+              Cancelar
+            </Button>
           </ModalFooter>
         </Modal>
       </div>
