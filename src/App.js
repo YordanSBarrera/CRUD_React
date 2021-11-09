@@ -42,9 +42,9 @@ class App extends React.Component {
     this.setState({ modalInsertar: false, modalEditar: false });
   };
   insertar = () => {
-    console.log(this.state.form);
+    // console.log(this.state.form);
     var ValorNuevo = { ...this.state.form };
-    ValorNuevo.id = this.state.data.length + 1;
+    ValorNuevo.id = this.state.data[this.state.data.length - 1].id + 1;
     var lista = this.state.data;
     lista.push(ValorNuevo);
     this.setState({ data: lista });
@@ -54,7 +54,7 @@ class App extends React.Component {
     var contador = 0;
     var lista = this.state.data;
     lista.map((registro) => {
-      if (dato.id == registro.id) {
+      if (dato.id === registro.id) {
         lista[contador].personaje = dato.personaje;
         lista[contador].anime = dato.anime;
       }
@@ -76,7 +76,7 @@ class App extends React.Component {
       var lista = this.state.data;
       var contador = 0;
       lista.map((registro) => {
-        if (dato.id == registro.id) {
+        if (dato.id === registro.id) {
           lista.splice(contador, 1);
         }
         contador++;
@@ -111,7 +111,7 @@ class App extends React.Component {
             </thead>
             <tbody>
               {this.state.data.map((elemento) => (
-                <tr>
+                <tr key={elemento.id}>
                   <th>{elemento.id}</th>
                   <th>{elemento.personaje}</th>
                   <th>{elemento.anime}</th>
@@ -153,7 +153,7 @@ class App extends React.Component {
                 className="form-control"
                 readOnly
                 type="text"
-                value={this.state.data.length + 1}
+                value={this.state.data[this.state.data.length - 1].id + 1}
                 name="id"
               />
             </FormGroup>
